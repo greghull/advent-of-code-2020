@@ -1,4 +1,5 @@
 import pandas as pd
+import cProfile
 
 data = pd.read_csv("input1.txt", header=None)
 sorted = data.squeeze().sort_values().to_numpy()
@@ -24,5 +25,6 @@ def day1_part2(array):
                     break
                 elif val2 == 2020:
                     return array[i]*array[j]*array[k]
-print(day1_part1(sorted))      
-print(day1_part2(sorted))
+                
+cProfile.run("print(day1_part1(sorted))")  
+cProfile.run("print(day1_part2(sorted))")
