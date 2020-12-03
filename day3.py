@@ -1,3 +1,5 @@
+import math
+
 # Solve for how many trees we'll encounter when taking the path
 # specified by down and right.
 # The solver works by moving down, then to the right.
@@ -33,18 +35,11 @@ def solve(filename, down=1, right=1):
 
 def main():
     routes = [
-        {'down': 1, 'right': 1},
-        {'down': 1, 'right': 3},
-        {'down': 1, 'right': 5},
-        {'down': 1, 'right': 7},
-        {'down': 2, 'right': 1},
+        {'down': 1, 'right': 1}, {'down': 1, 'right': 3}, {'down': 1, 'right': 5},
+        {'down': 1, 'right': 7}, {'down': 2, 'right': 1},
     ]
 
-    product = 1
-    for route in routes:
-        product *= solve('input3.txt', **route)
-
+    product = math.prod([solve('input3.txt', **route) for route in routes])
     print(product)
 
 main()
-
