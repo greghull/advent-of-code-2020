@@ -52,7 +52,7 @@ validators = {
 ## Given a passport string and a key, returns the value associate with that key as a string with 
 ## no following whitespace.
 ## Expects that passport key:value pairs will be separated by whitespace
-def get_value(passport: str, key: str) -> str:
+def passport_get(passport: str, key: str) -> str:
     pos = passport.find(key)
     if pos < 0:
         return None
@@ -63,9 +63,9 @@ def get_value(passport: str, key: str) -> str:
 
 ## The main validation function for part 2
 ## Given a passport string, checks that every key is present and that the associated value is valid
-def part2_is_valid(passport: str) -> bool:
+def part2_validator(passport: str) -> bool:
     for key in passport_keys:
-        value = get_value(passport, key)
+        value = passport_get(passport, key)
         if not value or not validators[key](value):
             return False
 
@@ -73,7 +73,7 @@ def part2_is_valid(passport: str) -> bool:
 
 ## The main validation function for part 1
 ## Just checks that all of the necessary keys are present
-def part1_is_valid(passport: str) -> bool:
+def part1_validator(passport: str) -> bool:
     for key in passport_keys:
         if passport.find(key) < 0:
             return False
@@ -101,7 +101,7 @@ def solve(validator: Callable[[str], bool], filename: str) -> int:
     return num_valid
 
 def main():
-    print(solve(part1_is_valid, 'input4.txt'))
-    print(solve(part2_is_valid, 'input4.txt'))
+    print(solve(part1_validator, 'input4.txt'))
+    print(solve(part2_validator, 'input4.txt'))
 
 main()
