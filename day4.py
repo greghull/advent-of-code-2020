@@ -1,4 +1,6 @@
 
+from typing import Callable
+
 # For part 1, a passport is valid if all the keys are present
 # For part 2, the key needs to be present and the validtor function needs to return True
 
@@ -11,7 +13,7 @@ passport_keys = [
     "hcl:", # (Hair Color)
     "ecl:", # (Eye Color)
     "pid:", # (Passport ID)
-    # "cid:", # (Country ID)
+    # "cid:", # (Country ID) (optional and ignored)
 ]
 
 ## Used by the height validator function to make sure the height is in the proper range
@@ -47,22 +49,21 @@ validators = {
     "pid:": lambda x: len(x) == 9 and x.isdigit(),
 }
 
-## Given a passport line and a key, returns the value associate with that key as a string with 
-## no following spaces.
-## Expects that passport key:value pairs will be separated by a space, 
-## with a trailing space at the end of the line.
-def get_value(passport, key):
+## Given a passport string and a key, returns the value associate with that key as a string with 
+## no following whitespace.
+## Expects that passport key:value pairs will be separated by whitespace
+def get_value(passport: str, key: str) -> str:
     pos = passport.find(key)
     if pos < 0:
         return None
     end = start = pos + len(key)
-    while passport[end] != ' ':
+    while end < len(passport) and not passport[end].isspace():
         end += 1
     return passport[start:end]
 
 ## The main validation function for part 2
-## Given a passport line, checks that every key is present and that the associated value is valid
-def part2_is_valid(passport):
+## Given a passport string, checks that every key is present and that the associated value is valid
+def part2_is_valid(passport: str) -> bool:
     for key in passport_keys:
         value = get_value(passport, key)
         if not value or not validators[key](value):
@@ -72,7 +73,7 @@ def part2_is_valid(passport):
 
 ## The main validation function for part 1
 ## Just checks that all of the necessary keys are present
-def part1_is_valid(passport):
+def part1_is_valid(passport: str) -> bool:
     for key in passport_keys:
         if passport.find(key) < 0:
             return False
@@ -82,24 +83,20 @@ def part1_is_valid(passport):
 # Goes through the whole file, and tallies how many passports are valid
 # multi-line passport entries are compacted to a single line before being passed to the validator
 # function
-def solve(validator, filename):
+def solve(validator: Callable[[str], bool], filename: str) -> int:
     num_valid = 0
     current_passport = ""
 
     with open(filename) as f:
         for line in f:
-            # remove new lines
-            line = line.rstrip('\n')
-
             # at a blank line process the current passport
-            if line == "":
+            if line.isspace():
                 if validator(current_passport):
                     num_valid += 1
                 current_passport = ""
             else:
-                #concatenate multiple lines, and ensure there is a trailing space at the end of 
-                #the passport line
-                current_passport += line + " "
+                # concatenate multiple line passports to a single string
+                current_passport += line
 
     return num_valid
 
