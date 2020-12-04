@@ -1,8 +1,9 @@
 
 from typing import Callable
 
-# For part 1, a passport is valid if all the keys are present
-# For part 2, the key needs to be present and the validtor function needs to return True
+# For part 1, a passport is valid if all the required keys are present
+# For part 2, each key needs to be present and the validator function needs to return True for the
+# associated value.
 
 # The keys on a passport line
 passport_keys = [
@@ -81,15 +82,13 @@ def part1_validator(passport: str) -> bool:
 
 
 # Goes through the whole file, and tallies how many passports are valid
-# multi-line passport entries are compacted to a single line before being passed to the validator
-# function
 def solve(validator: Callable[[str], bool], filename: str) -> int:
-    num_valid = 0
-    current_passport = ""
+    num_valid = 0               # the sum of the number of valid passports
+    current_passport = ""       # a string representing the passport as it's being read from file
 
     with open(filename) as f:
         for line in f:
-            # at a blank line process the current passport
+            # at a blank line process the current passport then discard it.
             if line.isspace():
                 if validator(current_passport):
                     num_valid += 1
