@@ -38,7 +38,7 @@ def main():
     ]
 
     product = 1
-    for route in routes: product *= solve('input3.txt', **route)
+    for route in routes: product *= solve('input/input3.txt', **route)
     print(product)
 
 main()

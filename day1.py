@@ -1,6 +1,6 @@
 data = []
 
-with open('input1.txt') as f:
+with open('input/input1.txt') as f:
     for line in f:
         data.append(int(line))
 

@@ -60,7 +60,7 @@ def solve_part2(filename: str) -> int:
             return my_seat
 
 def main():
-    print(solve_part1('input5.txt'))
-    print(solve_part2('input5.txt'))
+    print(solve_part1('input/input5.txt'))
+    print(solve_part2('input/input5.txt'))
 
 main()

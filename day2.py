@@ -21,5 +21,5 @@ def main(filename, test):
 
     return num_valid
 
-print(main('input2.txt', test1))
-print(main('input2.txt', test2))
+print(main('input/input2.txt', test1))
+print(main('input/input2.txt', test2))

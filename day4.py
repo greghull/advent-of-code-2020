@@ -100,7 +100,7 @@ def solve(validator: Callable[[str], bool], filename: str) -> int:
     return num_valid
 
 def main():
-    print(solve(part1_validator, 'input4.txt'))
-    print(solve(part2_validator, 'input4.txt'))
+    print(solve(part1_validator, 'input/input4.txt'))
+    print(solve(part2_validator, 'input/input4.txt'))
 
 main()
