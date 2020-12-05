@@ -1,11 +1,11 @@
-# Recursivle performs binary space partitioning based on string input.
+# Recursivly performs binary space partitioning based on string input.
 # lower_ch is that character that means take the lower half
+# any other character means take the upper half
 # str is the input string
 # upper is the upper bound for the coded number.  The final value will be <= upper-1
-# When the whole string has been decoded, lower will container the decoded value
+# When the whole string has been decoded, lower will contain the decoded value
 def binary_decode(lower_ch: str, str: str, upper: int, lower: int = 0) -> int:
-    if not str:
-        return lower
+    if not str: return lower
 
     if str[0] == lower_ch:
         return binary_decode(lower_ch, str[1:], upper - (upper - lower) // 2, lower)
