@@ -1,28 +1,24 @@
-# performs binary space partitioning based on string input
+# Recursivle performs binary space partitioning based on string input.
 # lower_ch is that character that means take the lower half
-# upper_ch is that character that means take the upper half
 # str is the input string
-# max_value is the upper end of the range
-# lower end of the range is assumed to be 0
-def binary_decode(lower_ch: str, upper_ch: str, str: str, max_value: int) -> int:
-    lower = 0
-    upper = max_value + 1
+# upper is the upper bound for the coded number.  The final value will be <= upper-1
+# When the whole string has been decoded, lower will container the decoded value
+def binary_decode(lower_ch: str, str: str, upper: int, lower: int = 0) -> int:
+    if not str:
+        return lower
 
-    for c in str:
-        if c == lower_ch:
-            upper = upper - (upper - lower) // 2
-        elif c == upper_ch:
-            lower = lower + (upper - lower) // 2
-
-    return lower
+    if str[0] == lower_ch:
+        return binary_decode(lower_ch, str[1:], upper - (upper - lower) // 2, lower)
+    else:
+        return binary_decode(lower_ch, str[1:], upper, lower + (upper - lower) // 2)
 
 # Given a boarding pass line, returns the seat row
 def decode_row(line: str) -> int:
-    return binary_decode('F', 'B', line[:7], 127)
+    return binary_decode('F', line[:7], 128)
 
 # Given a boarding pass line, returns the seat column
 def decode_col(line: str) -> int:
-    return binary_decode('L', 'R', line[7:], 7)
+    return binary_decode('L', line[7:], 8)
 
 # Given a boarding pass line, returns the seat id
 def seat_id(line: str) -> int:
