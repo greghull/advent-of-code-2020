@@ -19,7 +19,7 @@ def eval2(group: str) -> int:
             yes[ch] = yes.get(ch, 0) + 1
 
     # return the number of questions that everyone said yes to
-    return sum(map(lambda x: 1 if x == len(group) else 0, yes.values()))
+    return sum(map(lambda x: x // len(group), yes.values()))
     
 # Solve part1 of the day's problem
 def solve(filename: str, eval) -> int:
