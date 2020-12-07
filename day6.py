@@ -28,17 +28,16 @@ def solve(filename: str, eval) -> int:
     # a running some of who answered yes according to each problem's requirements
     sum = 0                             
     with open(filename) as f:
-        for line in f:
-            if line.isspace():           
-                # at an empty line, eval the previous group and reset the current group
+        for line in (line.rstrip('\n') for line in f):
+            if line:           
+                # add the current line to the current group
+                group.append(line) 
+            else:
+                 # at an empty line, eval the previous group and reset the current group
                 sum += eval(group)
                 group = []
-            else:
-                # otherwise add the current line to the current group
-                group.append(line.rstrip('\n')) 
                 
     return sum
-
 
 def main():
     print(solve('input/input6.txt', eval1))
