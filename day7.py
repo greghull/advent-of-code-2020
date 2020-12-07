@@ -1,7 +1,8 @@
 ## Definitions
-## -- bag is a string of the form "adjective color"
-## -- contents is an array of bag strings
-## -- BAGS is a dictionary where the keys are each a bag, and the values are contents
+## A bag is a string of the form "adjective color".
+## A contents is an array of bag strings.
+## The global variable BAGS is a dictionary, where the keys are each a bag, 
+## and the values are contents.
 
 BAGS = {}
 
@@ -17,7 +18,7 @@ class Memoize:
             self.memo[args] = self.fn(*args)
         return self.memo[args]
 
-## Given a source bag and a target bag, this functions returns true if source bag
+## Given a source bag and a target bag, this function returns true if source bag
 ## will eventually contain the target bag
 @Memoize
 def contains(source, target):
@@ -52,6 +53,7 @@ def expect_alpha(tokens):
     return word
 
 # Given an iteration of tokens, expects the next token to be the name of a bag and returns it
+# If that name doesn't already exists in the global dictionary of BAGS, then the name is added
 def expect_bag(tokens):
     bag = ' '.join([expect_alpha(tokens), expect_alpha(tokens)])
     if not bag in BAGS:
@@ -75,19 +77,24 @@ def expect_number(tokens) -> int:
 
     return int(num)
 
-# parses a line describing a bag and adds it to the BAG dictionary
+# parses a line describing a bag
 def parse(line):
+    # We'll iterate through the line, token by token
     tokens = iter(line.split(' '))
 
+    # First get the bag that is being described
     bag = expect_bag(tokens)
+    # then retrieve the array that describes the bags contents
     contents = BAGS[bag]
 
+    # make sure that he grammar is sane, then ignore these tokens
     expect_literal(tokens, 'bags')
     expect_literal(tokens, 'contain')
 
+    # what follows next is a list of bags that are contained in the bag defined at the beginning
+    # of the line
     while True:
         num = expect_number(tokens)
-
         if not num:
             break
 
@@ -95,6 +102,8 @@ def parse(line):
         for i in range(num):
             contents.append(inner_bag)
 
+        # next(tokens) will be one of ['bag,', 'bags,', 'bag.', 'bags.']
+        # if it contains a period, then the line is ended
         if '.' in next(tokens):
             break
 
@@ -108,9 +117,14 @@ def solve1() -> int:
 def solve2() -> int:  
     return contents_count('shiny gold')
 
-with open('input/input7.txt') as f:
-    for line in (line.rstrip('\n') for line in f):
-        parse(line)
 
-print(solve1())
-print(solve2())
+def main():
+    with open('input/input7.txt') as f:
+        for line in (line.rstrip('\n') for line in f):
+            parse(line)
+
+    print(solve1())
+    print(solve2())
+
+
+main()
