@@ -24,23 +24,15 @@ class Memoize:
 def contains(source, target):
     contents = BAGS[source]
     for c in contents:
-        if c == target:
+        if c == target or contains(c, target):
             return True
-        else:
-            if contains(c, target):
-                return True
 
     return False
 
 # Given a source bag, this function returns the number of bags it will contain, including all nested bags.
 def contents_count(source):
     contents = BAGS[source]
-    num = len(contents)
-
-    for c in contents:
-        num += contents_count(c)
-
-    return num
+    return len(contents) + sum([contents_count(c) for c in contents])
 
 
 ## PARSER FUNCTIONS
