@@ -1,19 +1,22 @@
-# Each command for the virtual machine is a tuple of the form (OP, ARG)
-OP = 0
-ARG = 1
+# Each command for the virtual machine is a tuple of the form (operation, argument)
+OP = 0      # index of the operation portion of a tuple
+ARG = 1     # index of the argument portion of a tuple
+
+# The evaluator returns a typle of the form (acc, ip)
+ACC = 0     # index of the accumulator portion of a tuple
+IP = 1      # index of the instruction pointer portion of a tuple
 
 # code is an array of commands of the form: [(op_1, arg_1), ..., (op_n, arg_n)]
 # eval runs the given code and returns a tuple (acc, ip)
 def eval(code):
     acc = 0             # the accumulator register
     ip = 0              # the instruction pointer
-    history = set()     # keep a set of commands that have already been run
+    visited = set()     # the set of instruction pointers that have already been run
 
-    while ip not in history:
-        history.add(ip)
-
-        if ip >= len(code):
-            break
+    # The program terminates once we reach any command that has already been run
+    # or once the instruction pointer points past the end of the code
+    while ip not in visited and ip < len(code):
+        visited.add(ip)
 
         cmd = code[ip]
 
@@ -54,8 +57,9 @@ def meta_eval(code):
 
         ret = eval(code2)
 
-        if ret[1] == len(code):
+        if ret[IP] == len(code):
             return ret
+
 # parses a line of code into a command tuple
 # returns a tuple (op, arg)
 def parse(line):
