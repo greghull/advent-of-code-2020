@@ -1,4 +1,4 @@
-import strutils, sequtils, sugar
+import strutils, sequtils
 # Given a series of numbers (series), and a preamble length (p_len):
 
 # The first p_len numbers are the preamble
