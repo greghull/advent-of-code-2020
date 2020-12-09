@@ -40,7 +40,7 @@ proc find_weakness(s: seq[int], invalid_num: int): int =
 
 # Returns the invalid number and weakness for the series of numbers in the specified file
 proc xmas(filename: string, p_len: int): array[2, int] =
-    let s = toSeq(lines filename).map(l => l.parseInt())
+    let s = toSeq(lines filename).mapIt(it.parseInt())
     let invalid_num = find_invalid_num(s, p_len)
     let weakness = find_weakness(s, invalid_num)
     result = [invalid_num, weakness]
