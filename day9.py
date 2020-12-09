@@ -7,8 +7,8 @@
 
 # The invalid number is the first number in the series that is not valid.
 
-# The weakness is the sum of the min and max numbers of a subseries of continuous numbers within
-# the series that sum to the invalid number
+# The weakness is the sum of the min and max numbers of a subseries with length >= 2 
+# that sum to the invalid number
 
 # Returns true if there are 2 numbers in block that sum to x
 def is_valid(block, x):
@@ -23,6 +23,7 @@ def find_invalid_num(series, p_len):
     for i in range(p_len, len(series)):
         if not is_valid(series[i-p_len:i], series[i]):
             return series[i]
+            
     return None
 
 # Given a series of numbers, and the invalid number, finds the weakness
@@ -35,7 +36,7 @@ def find_weakness(series, invalid_num):
             sum += series[j]
             j += 1
 
-        if sum == invalid_num:
+        if sum == invalid_num and i != j:
             return min(series[i:j]) + max(series[i:j])
 
     return 0
