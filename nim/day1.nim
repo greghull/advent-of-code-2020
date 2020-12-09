@@ -1,10 +1,4 @@
-import strutils, algorithm
-
-proc load_data(filename: string): seq[int] = 
-    for line in lines filename:
-        result.add(strutils.parseInt(line))
-
-    result.sort()
+import strutils, algorithm, sequtils
 
 proc solve_part1(s: seq[int]): int =
     let reversed = s.reversed()
@@ -30,7 +24,8 @@ proc solve_part2(s: seq[int]): int =
                     return s[i]*s[j]*s[k]
     return 0
 
-let data = load_data("../input/input1.txt")
+#let data = load_data("../input/input1.txt")
+var data = toSeq(lines "../input/input1.txt").mapIt(it.parseInt()).sorted()
 
 echo solve_part1(data)
 echo solve_part2(data)
