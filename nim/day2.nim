@@ -1,4 +1,4 @@
-import re, strutils
+import re, strutils, sequtils
 
 type
     Password = tuple
@@ -13,18 +13,16 @@ proc parse(line: string): Password =
         return (strutils.parseInt(matches[0]), strutils.parseInt(matches[1]), 
                 matches[2][0], matches[3])
 
-proc test1(p: Password): bool =
-    let cnt = strutils.count(p.pw, p.ch)
-    return cnt >= p.min and cnt <= p.max
+proc test1(p: Password): int =
+    let cnt = p.pw.count(p.ch)
+    if cnt >= p.min and cnt <= p.max: return 1
 
-proc test2(p: Password): bool =
-    return (p.pw[p.min-1] == p.ch) != (p.pw[p.max-1] == p.ch)
+proc test2(p: Password): int =
+    if (p.pw[p.min-1] == p.ch) != (p.pw[p.max-1] == p.ch):
+        return 1
 
-proc solve(filename: string, test: proc(pw: Password): bool): int =
-    for line in lines filename:
-        if test(parse(line)):
-            result += 1
-
+proc solve(filename: string, test: proc(pw: Password): int): int =
+    return toSeq(lines filename).mapIt((test(parse(it)))).foldl(a+b)
 
 echo solve("../input/input2.txt", test1)
 echo solve("../input/input2.txt", test2) 

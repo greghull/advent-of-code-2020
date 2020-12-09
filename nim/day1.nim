@@ -1,22 +1,23 @@
 import strutils, algorithm, sequtils
 
+# find the 2 numbers in the sequence s that add up to 2020 and return their product
 proc solve_part1(s: seq[int]): int =
-    let reversed = s.reversed()
-    for i in s:
-        for j in reversed:
-            if i+j == 2020:
-                return i*j
-            elif i+j < 2020:
+    for i in 0..<s.len:
+        for j in countdown(s.len-1, 0):
+            if s[i]+s[j] == 2020:
+                return s[i]*s[j]
+            elif s[i]+s[j] < 2020:
                 break
 
     return 0
 
+# find the 3 numbers that add up to 2020 and return their product
 proc solve_part2(s: seq[int]): int = 
     for i in 0 ..< s.len:
         for j in i+1 ..< s.len:
             if s[i] + s[j] >= 2020:
                 break
-            for k in 0 ..< s.len:
+            for k in j+1 ..< s.len:
                 let val = s[i]+s[j]+s[k]
                 if val > 2020:
                     break
