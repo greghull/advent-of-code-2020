@@ -1,10 +1,13 @@
 import sequtils
 
-# Directions for searching for occupied seats
-# directions = ne, n, nw, e, w, se, s, sw
 type
     Grid = seq[string]
 
+    # A Rule consists of:
+    # - the maximum distance that we should look for empty seats
+    #       - 0 means no maximum distance  (part 2)
+    #       - 1 means only look at adjacent seats  (part 1)
+    # - the maximum number of seen seats that can be occupied
     Rule = tuple
         max_distance: int
         max_occupancy: int
@@ -15,12 +18,6 @@ type
 
 const 
     DIRECTIONS = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
-
-# A rule consists of:
-# - the maximum distance that we should look for empty seats
-#       - 0 means no maximum distance  (part 2)
-#       - 1 means only look at adjacent seats  (part 1)
-# - the maximum number of seen seats that can be occupied
     RULES = [(max_distance: 1, max_occupancy: 4), (max_distance: 0, max_occupancy: 5)]
 
 # Given a grid, a starting location, and a direction returns 1 if an occupied seat can be seen in the
