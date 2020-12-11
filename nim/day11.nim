@@ -1,4 +1,4 @@
-import sequtils, sugar
+import sequtils
 
 # Directions for searching for occupied seats
 # directions = ne, n, nw, e, w, se, s, sw
@@ -48,10 +48,8 @@ proc can_see_occupied(grid: Grid, y: int, x: int, dir: Direction, max_dist=0): i
     return 0
 
 proc nearby(grid: Grid, y: int, x: int, max_dist: int): int = 
-    let n = collect(newSeq):
-        for dir in DIRECTIONS:
-            can_see_occupied(grid, y, x, dir, max_dist)
-    return foldl(n, a+b)
+    for dir in DIRECTIONS:
+        result += can_see_occupied(grid, y, x, dir, max_dist)
   
 
 # Given a grid, transforms the specified seat according to the supplied rules
@@ -76,21 +74,13 @@ proc transform_row(grid: Grid, y: int, rule: Rule): string =
 
 # Given a starting grid, and a rule, returns the new grid
 proc transform(grid: Grid, rule: Rule): Grid =
-    collect(newSeq):
-        for y in 0..<grid.len:
-            transform_row(grid, y, rule)
-
-# Returns true if two grids are equal
-proc grid_equals(g1, g2: Grid): bool =
-    all(toSeq 0 ..< g1.len, proc (y: int): bool = g1[y] == g2[y])
+    for y in 0..<grid.len:
+        result &= transform_row(grid, y, rule)
 
 # Given a grid, returns the number of occupied seats
 proc num_occupied(grid: Grid): int = 
-    let num = collect(newSeq):
-        for row in grid:
-            row.count('#')
-    return num.foldl(a+b)
-
+    for row in grid:
+        result += row.count('#')
 
 # Pretty prints a grid
 proc p(grid: Grid) = 
