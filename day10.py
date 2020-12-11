@@ -1,13 +1,15 @@
 # To solve part 2:
-# Create an array of independent graphs [G_1, G_2, ..., G_n] from the input data
+# Based on the constraints of the puzzle:
+# Anytime the distance between two vertices is 3, then all paths most include that edge
+# We can split a large graph into independent left and right graphs at that edge
+#
+# Given array of independent graphs [G_1, G_2, ..., G_n] 
 # Then the total number of paths from start to finish is:
 # n_paths(G_1) * n_paths(G_2) * ... * n_paths(G_n)
 
-# Given the sequence from the puzzle input, creates an array of independent graphs
-def create_graphs(s):
-    graphs = []
+# Given a sequence from the puzzle input, creates a graph
+def series_to_graph(s):
     g = {}
-    split = 0
     for i in range(len(s)):
         v = []
         for j in range(i+1, i+4):
@@ -17,46 +19,54 @@ def create_graphs(s):
                 break
             v.append(s[j])
 
-            if s[j]-s[i] == 3:
-                split = j
-
         g[s[i]] = v
 
-        if i == split:
-            graphs.append(g)
-            g = {}
-            g[s[i]] = v
+    return g
 
-    graphs.append(g)
+# Given a graph, finds all paths from start to end
+def find_all_paths(g, start=None, end=None, path=[]):
+    if not start:
+        start = min(g.keys())
+    if not end:
+        end = max(g.keys())
 
-    return graphs
-
-# Given a graph, finds all paths from start to finish
-def find_all_paths(graph, start, end, path=[]):
     path = path + [start]
     if start == end:
         return [path]
-    if start not in graph:
+    if start not in g:
         return []
     paths = []
-    for node in graph[start]:
-        if node not in path:
-            newpaths = find_all_paths(graph, node, end, path)
+    for v in g[start]:
+        if v not in path:
+            newpaths = find_all_paths(g, v, end, path)
             for newpath in newpaths:
                 paths.append(newpath)
     return paths
 
+# Given the sorted list of adapters, and a maximum distance between them
+# split into a list of slices each time two elements are the maximum distant apart
+def split(s, d):
+    result = []
+    left = 0
+
+    for i in range(len(s)-1):
+        if s[i+1] - s[i] == d:
+            result.append(s[left:i+1])
+            left=i+1
+
+    result.append(s[left:])
+
+    return result
+
 
 def solve2(s):
-    graphs = create_graphs(s)
-    print(graphs)
-    print(len(graphs))
+    graphs = [series_to_graph(x) for x in split(s,3)]
 
     # Since our graphs are independent total number of paths is
     # the product of the number of paths within each graph
     cnt = 1
     for g in graphs:
-        cnt *= len(find_all_paths(g, min(g.keys()), max(g.keys())))
+        cnt *= len(find_all_paths(g))
 
     return cnt
 
@@ -68,12 +78,12 @@ def solve1(s):
 
     diffs[3] += 1
 
-    print(diffs)
-
     return diffs[1]*diffs[3]
 
 with open('input/input10.txt') as f:
     series = sorted([int(line.rstrip('\n')) for line in f])
+
+# insert the outlet before the sorted lists of adapters
 series.insert(0, 0)
     
 print(solve1(series))
