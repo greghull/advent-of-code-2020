@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 ## Definitions
 ## A bag is a string of the form "adjective color".
 ## A contents is an array of bag strings.
@@ -6,21 +8,9 @@
 
 BAGS = {}
 
-## This class is used to memoize functions that count bags
-## Taken directly from https://www.python-course.eu/python3_memoization.php
-class Memoize:
-    def __init__(self, fn):
-        self.fn = fn
-        self.memo = {}
-
-    def __call__(self, *args):
-        if args not in self.memo:
-            self.memo[args] = self.fn(*args)
-        return self.memo[args]
-
 ## Given a source bag and a target bag, this function returns true if source bag
 ## will eventually contain the target bag
-@Memoize
+@lru_cache
 def contains(source, target):
     contents = BAGS[source]
     for c in contents:
