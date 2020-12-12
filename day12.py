@@ -3,20 +3,16 @@
 OP = 0
 ARG = 1
 
-# A direction is an ordered pair
-# y is the first value, x is the second value
-Y = 0
-X = 1
-
-DIRECTIONS = {
-    0: (1,0),
-    90: (0,1),
-    180: (-1, 0),
-    270: (0, -1),
+# A 4-pt compass direction is an ordered pair
+COMPASS = {
     "N": (1,0),
     "E": (0,1),
     "S": (-1, 0),
     "W": (0, -1),
+    0: (1,0),
+    90: (0,1),
+    180: (-1, 0),
+    270: (0, -1),
 }
 
 # Navigation computer Mark 1 -- for solving problem 1
@@ -32,8 +28,8 @@ class Mark1:
 
     # Moves the ship n units in the specified direction
     def move(self, dir, n):
-        self.y = self.y + n*dir[Y]
-        self.x = self.x + n*dir[X]
+        self.y = self.y + n*dir[0]
+        self.x = self.x + n*dir[1]
 
     def eval(self, code):
         for cmd in code:
@@ -41,13 +37,13 @@ class Mark1:
             arg = cmd[ARG]
 
             if op in "NSEW":
-                self.move(DIRECTIONS[op], arg)
+                self.move(COMPASS[op], arg)
             elif op == 'R':
                 self.bearing = (self.bearing + arg) % 360
             elif op == 'L':
                 self.bearing = (self.bearing - arg) % 360
             elif op == 'F':
-                self.move(DIRECTIONS[self.bearing], arg)
+                self.move(COMPASS[self.bearing], arg)
                 
 
 # Navigation computer Mark 2 -- for solving problem 2
@@ -59,8 +55,8 @@ class Mark2(Mark1):
 
     # Moves the waypoint n units in the specified direction
     def move_way(self, dir, n):
-        self.way_y = self.way_y + n*dir[Y]
-        self.way_x = self.way_x + n*dir[X]
+        self.way_y = self.way_y + n*dir[0]
+        self.way_x = self.way_x + n*dir[1]
 
     def rotate_waypoint(self, bearing):
         if bearing != 0:
@@ -73,7 +69,7 @@ class Mark2(Mark1):
             arg = cmd[ARG]
 
             if op in "NSEW":
-                self.move_way(DIRECTIONS[op], arg)
+                self.move_way(COMPASS[op], arg)
             elif op == 'R':
                 self.rotate_waypoint(arg % 360)
             elif op == 'L':
