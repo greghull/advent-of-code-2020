@@ -57,7 +57,7 @@ class Mark2(Mark1):
         self.way_x = way_x
         self.way_y = way_y
 
-    # Moves the ship n units in the specified direction
+    # Moves the waypoint n units in the specified direction
     def move_way(self, dir, n):
         self.way_y = self.way_y + n*dir[Y]
         self.way_x = self.way_x + n*dir[X]
