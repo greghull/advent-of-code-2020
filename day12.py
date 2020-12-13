@@ -15,6 +15,11 @@ COMPASS = {
     270: (0, -1),
 }
 
+TURN = {
+    "L": -1,    # Turn to the left is negative degrees
+    "R": 1      # Rotate to the right is positive degrees
+}
+
 # Navigation computer Mark 1 -- for solving problem 1
 class Mark1:
     def __init__(self, bearing=0):
@@ -28,8 +33,8 @@ class Mark1:
 
     # Moves the ship n units in the specified direction
     def move(self, dir, n):
-        self.y = self.y + n*dir[0]
-        self.x = self.x + n*dir[1]
+        self.y += n*dir[0]
+        self.x += n*dir[1]
 
     def eval(self, code):
         for cmd in code:
@@ -38,10 +43,8 @@ class Mark1:
 
             if op in "NSEW":
                 self.move(COMPASS[op], arg)
-            elif op == 'R':
-                self.bearing = (self.bearing + arg) % 360
-            elif op == 'L':
-                self.bearing = (self.bearing - arg) % 360
+            elif op in "RL":
+                self.bearing = (self.bearing + TURN[op]*arg) % 360
             elif op == 'F':
                 self.move(COMPASS[self.bearing], arg)
                 
@@ -55,8 +58,8 @@ class Mark2(Mark1):
 
     # Moves the waypoint n units in the specified direction
     def move_way(self, dir, n):
-        self.way_y = self.way_y + n*dir[0]
-        self.way_x = self.way_x + n*dir[1]
+        self.way_y += n*dir[0]
+        self.way_x += n*dir[1]
 
     def rotate_waypoint(self, bearing):
         if bearing != 0:
@@ -70,10 +73,8 @@ class Mark2(Mark1):
 
             if op in "NSEW":
                 self.move_way(COMPASS[op], arg)
-            elif op == 'R':
-                self.rotate_waypoint(arg % 360)
-            elif op == 'L':
-                self.rotate_waypoint((-1 * arg) % 360)
+            elif op in 'RL':
+                self.rotate_waypoint((TURN[op]*arg) % 360)
             elif op == 'F':
                 self.move([self.way_y, self.way_x], arg)
 
