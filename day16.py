@@ -59,6 +59,9 @@ def solve1():
     return total
 
 def valid_ticket(ticket):
+    # A Ticket is invalid if any of it's values is 0
+    if not all(ticket):
+        return False
     return sum([invalid_value(v) for v in ticket]) == 0
 
 
