@@ -1,5 +1,3 @@
-## Ugly code below.. but it works.
-
 import re
 from functools import reduce
 
@@ -7,18 +5,13 @@ class Field:
     # A Field line looks like:
     # departure location: 49-627 or 650-970
     def __init__(self, line):
-        parts = line.split(': ')
-        self.name = parts[0]
+        m = re.match("\A(\w+\s*\w+):\s*(\d+)-(\d+)\s*or\s*(\d+)-(\d+)", line)
         
-        ranges = parts[1].split(' or ')
-
-        r = ranges[0].split('-')
-        self.min1 = int(r[0])
-        self.max1 = int(r[1])
-
-        r = ranges[1].split('-')
-        self.min2 = int(r[0])
-        self.max2 = int(r[1])
+        self.name = m.group(1)
+        self.min1 = int(m.group(2))
+        self.max1 = int(m.group(3))
+        self.min2 = int(m.group(4))
+        self.max2 = int(m.group(5))
 
         # A set of ticket columns that could correspond to this field
         self.possible_cols = set(range(20))
@@ -33,11 +26,14 @@ class Field:
                 self._col = self.possible_cols.pop()
         return self._col
 
+    def discard_col(self, col):
+        self.possible_cols.discard(col)
+
     def has(self, n):
         return (n >= self.min1 and n <= self.max1) or (n >= self.min2 and n <= self.max2)
     
     def __str__(self):
-        return f"{self.name}: {self.range1.start}-{self.range1.stop-1} or {self.range2.start}-{self.range2.stop-1}"
+        return f"{self.name}: {self.min1}-{self.max1} or {self.min2}-{self.max2}"
 
 FIELDS = []
 MY_TICKET = None
@@ -70,13 +66,13 @@ def scan_tickets(tickets):
         for ticket in tickets:
             for i,v in enumerate(ticket):
                 if not field.has(v):
-                    field.possible_cols.discard(i)
+                    field.discard_col(i)
 
 def scan_fields():
     for field in FIELDS:
         if field.col is not None:
             for f in FIELDS:
-                f.possible_cols.discard(field.col)
+                f.discard_col(field.col)
 
 
 def solve2():
@@ -85,14 +81,14 @@ def solve2():
 
     print([f.col for f in FIELDS])
 
-    # Based on ticket values, try to determine which ticket column corresponds to which fields
+    # Based on ticket values, eliminate possible column values for each field
     scan_tickets(tickets)
 
     print([f.col for f in FIELDS])
 
-    # There is now at least 1 field that has only a single possible column... r
+    # There is now at least 1 field that has only a single possible column value... 
     # remove that column from the list of possible columns for the other fields.  
-    # Repeat this process until we can determine the column identies for at least the first 6 fields
+    # Repeat this process until we can determine the column identies for all of the fields
     while None in [f.col for f in FIELDS]:
         scan_fields()
         print([f.col for f in FIELDS])
