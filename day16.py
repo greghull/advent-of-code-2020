@@ -21,7 +21,7 @@ class Field:
         self.max2 = int(r[1])
 
         # A set of ticket columns that could correspond to this field
-        self.possible_cols = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19}
+        self.possible_cols = set(range(20))
 
         # The ticket column that does correspond to this field
         self._col = None
@@ -83,14 +83,20 @@ def solve2():
     # Filter out the invalid tickets
     tickets = list(filter(lambda x: valid_ticket(x), NEARBY_TICKETS))
 
+    print([f.col for f in FIELDS])
+
     # Based on ticket values, try to determine which ticket column corresponds to which fields
     scan_tickets(tickets)
+
+    print([f.col for f in FIELDS])
 
     # There is now at least 1 field that has only a single possible column... r
     # remove that column from the list of possible columns for the other fields.  
     # Repeat this process until we can determine the column identies for at least the first 6 fields
-    for i in range(20):
+    while None in [f.col for f in FIELDS]:
         scan_fields()
+        print([f.col for f in FIELDS])
+
 
     # Return the product of the first 6 fields of my ticket
     return reduce(lambda x,y: x*y, [MY_TICKET[FIELDS[i].col] for i in range(6)])
