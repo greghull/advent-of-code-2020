@@ -1,3 +1,5 @@
+import array
+
 def solve(n_rounds, initial):
     mem = {}
     last = 0
@@ -15,7 +17,9 @@ def solve(n_rounds, initial):
 
 # Using an array is faster than using a dictionary, but we have to guess blindly at initial size
 def solve2(n_rounds, initial):
-    mem = [None] * 100000000
+    #mem = [None] * 100000000
+    # saw this little optimization online
+    mem = array.array('I', [0]) * 100000000
     last = 0
 
     for i, n in enumerate(initial):
