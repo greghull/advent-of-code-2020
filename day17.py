@@ -1,60 +1,48 @@
 from array import array
 
-# Returns a new space of dimension t * z * y * x
+# Returns a new space of dimension t * z * y * x with each point populated by a '0'
 def new_4space(t, z, y, x):
-    return [[[array('u', "." * x) for j in range(y)] for i in range(z)] for d in range(t)]
+    return [[[array('I', [0] * x) for j in range(y)] for i in range(z)] for d in range(t)]
 
 # A "Space" is a 4-dimensional array indexed by t, z, y, x
 # For loops the indices d,i,j,k are often used to reference t,z,y,x
 # The t dimension will be ignored if time_travel is set to False
 class Space:
     def __init__(self, plane, time_travel=False):
-        self.array = [[plane]]
+        self.points = [[plane]]
 
         if time_travel:
             self.time_delta = 2
         else:
             self.time_delta = 0
 
-    def print(self):
-        for t,space in enumerate(self.array):
-            print(f"t={t}")
-            for plane in space:
-                for row in plane:
-                    print("".join(row))
-                print("")
-
     @property
-    def age(self):
-        return len(self.array)
+    def points(self):
+        return self._points
 
-    @property
-    def depth(self):
-        return len(self.array[0])
-
-    @property
-    def height(self):
-        return len(self.array[0][0])
-
-    @property
-    def width(self):
-        return len(self.array[0][0][0])
+    @points.setter
+    def points(self, p):
+        self._points = p
+        self.age = len(p)
+        self.depth = len(p[0])
+        self.height = len(p[0][0])
+        self.width = len(p[0][0][0])
 
     def cycle(self):
-        new_array = new_4space(self.age+self.time_delta, self.depth+2, self.height+2, self.width+2)
+        new_points = new_4space(self.age+self.time_delta, self.depth+2, self.height+2, self.width+2)
 
-        for t, space in enumerate(new_array):
+        for t, space in enumerate(new_points):
             for i, plane in enumerate(space):
                 for j, row in enumerate(plane):
                     for k in range(len(row)):
                         val = self.value_at(t-self.time_delta//2, i-1,j-1,k-1)
                         active_neighbors = self.active_neighbors(t-self.time_delta//2,i-1,j-1,k-1)
                         if val == 1 and active_neighbors in [2,3]:
-                            row[k] = "#"
+                            row[k] = 1
                         elif val == 0 and active_neighbors == 3:
-                            row[k] = "#"
+                            row[k] = 1
 
-        self.array = new_array
+        self.points = new_points
 
     def value_at(self, t, z, y, x):
         if t < 0 or t >= self.age: return 0
@@ -62,10 +50,8 @@ class Space:
         if y < 0 or y >= self.height: return 0
         if x < 0 or x >= self.width: return 0
 
-        if self.array[t][z][y][x] == ".":
-            return 0
+        return self.points[t][z][y][x] 
 
-        return 1
 
     def active_neighbors(self, t, z, y, x):
         total = 0
@@ -77,7 +63,6 @@ class Space:
 
         return total-self.value_at(t,z,y,x) # ignore specified point
 
-    @property
     def count(self):
         total = 0
         for t in range(self.age):
@@ -88,19 +73,17 @@ class Space:
 
         return total
 
-    def __str__(self):
-        return f"A {self.age} x {self.depth} x {self.height} x {self.width} space with time delta {self.time_delta}."
-
 def read(filename):
+    values = {"#": 1, ".": 0}
     with open(filename) as f:
-        return [array('u', line.rstrip('\n')) for line in f]
+        return [array('I', [values[ch] for ch in line.rstrip('\n')]) for line in f]
 
 space = Space(read("input/input17.txt"), time_travel=False)
 for i in range(6):
     space.cycle()
-print(space.count)
+print(space.count())
 
 space = Space(read("input/input17.txt"), time_travel=True)
 for i in range(6):
     space.cycle()
-print(space.count)
+print(space.count())
