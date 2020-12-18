@@ -25,17 +25,13 @@ def eval(expr):
     if len(expr) == 1:
         return eval(expr[0])
 
-    a = eval(expr[0])
-    op = expr[1]
-    b = eval(expr[2])
+    a, op, b = eval(expr[0]), f[expr[1]], eval(expr[2])
 
-    return eval([f[op](a,b)] + expr[3:])
+    return eval([op(a,b)] + expr[3:])
 
 def expand(expr):
     # don't try to expand an integer or an operator
-    if type(expr) == int:
-        return expr
-    if type(expr) == str:
+    if type(expr) in [int, str]:
         return expr
 
     result = []
