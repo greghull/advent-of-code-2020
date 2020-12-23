@@ -61,8 +61,10 @@ def play_game(decks):
     while len(decks[0]) > 0 and len(decks[1]) > 0:
         if have_played(history, decks):
             return 0
-
         record_played(history, decks)
+
+        if (m := max(decks[0])) > max(decks[1]) and m > len(decks[0]) + len(decks[1]):# p0 can't lose
+            return 0
         
         cards = [deck.pop(0) for deck in decks]
 
