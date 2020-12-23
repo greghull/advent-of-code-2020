@@ -1,5 +1,7 @@
+import array
+
 def make_cups(lst):
-    cups = {}
+    cups = array.array("Q", [0] * (len(lst)+1))
     for i in range(len(lst)-1):
         cups[lst[i]] = lst[i+1]
     cups[lst[-1]] = lst[0]
@@ -16,25 +18,22 @@ def pp(cups, current):
     print()
 
 def pickup(cups, current):
-    pickup_cups = []
+    pc = [0] * 3
 
-    cup = current
-    for i in range(3):
-        pickup_cups.append(cups[cup])
-        cup = cups[cup]
+    pc[0] = cups[current]
+    pc[1] = cups[pc[0]]
+    pc[2] = cups[pc[1]]
+    cups[current] = cups[pc[2]]
 
-    cups[current] = cups[cup]
+    return pc
 
-    return pickup_cups
-
-def insert(cups, dest, pickup_cups):
+def insert(cups, dest, pc):
     tmp = cups[dest]
+    cups[dest] = pc[0]
+    cups[pc[0]] = pc[1]
+    cups[pc[1]] = pc[2]
+    cups[pc[2]] = tmp
 
-    for i in range(3):
-        cups[dest] = pickup_cups[i]
-        dest = pickup_cups[i]
-
-    cups[dest] = tmp
 
 
 def play(cups, current, base, display=True):
@@ -56,17 +55,17 @@ def play(cups, current, base, display=True):
     return cups[current]
 
 # PART 1
-cups = make_cups([int(x) for x in "318946572"])
-current = 3
-base = 10
+# cups = make_cups([int(x) for x in "318946572"])
+# current = 3
+# base = 10
 
-for i in range(100):
-    print("--", "Move", i+1, "--")
-    current = play(cups, current, base, display=False)
-    print()
+# for i in range(100):
+#     print("--", "Move", i+1, "--")
+#     current = play(cups, current, base, display=True)
+#     print()
 
-print("-- final --")
-pp(cups, current)
+# print("-- final --")
+# pp(cups, current)
 
 #PART 2
 cups2 = make_cups([int(x) for x in "318946572"] + list(range(10,1000001)))
