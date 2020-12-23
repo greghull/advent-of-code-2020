@@ -1,45 +1,80 @@
-cups = [int(x) for x in "389125467"]
-base = max(cups)
+def make_cups(lst):
+    cups = {}
+    for i in range(len(lst)-1):
+        cups[lst[i]] = lst[i+1]
+    cups[lst[-1]] = lst[0]
+    return cups
 
 def pp(cups, current):
-    print("cups:", end=" ")
-    for cup in cups:
-        if cup == current:
-            print(f"({cup})", end=" ")
-        else:
-            print(cup, end=" ")
+    print(f"cups: ({current})", end=" ")
+
+    cup = cups[current]
+
+    while cup != current:
+        print(cup, end=" ")
+        cup = cups[cup]
     print()
 
-def pickup(cups, idx):
+def pickup(cups, current):
     pickup_cups = []
+
+    cup = current
     for i in range(3):
-        pickup_cups.append(cups.pop((idx+1) % len(cups)))
+        pickup_cups.append(cups[cup])
+        cup = cups[cup]
+
+    cups[current] = cups[cup]
+
     return pickup_cups
 
-def insert_cups(cups, dest, pickup_cups):
-    idx = cups.index(dest)
+def insert(cups, dest, pickup_cups):
+    tmp = cups[dest]
 
     for i in range(3):
-        cups.insert(idx+i+1, pickup_cups[i])
+        cups[dest] = pickup_cups[i]
+        dest = pickup_cups[i]
 
-def play(cups, current):
-    idx = cups.index(current)
-    pp(cups, current)    
+    cups[dest] = tmp
 
-    pickup_cups = pickup(cups, idx)
-    print("pick up:", pickup_cups)
 
+def play(cups, current, base, display=True):
+    if display:
+        pp(cups, current)
+    
+    pickup_cups = pickup(cups, current)
+    if display:
+        print("pick up:", pickup_cups)
+    
     dest = (current-1) % base
-    while dest not in cups:
+    while dest in pickup_cups or dest == 0:
         dest = (dest-1) % base
-    print("destination:", dest)
+    if display:
+        print("destination:", dest)
 
-    insert_cups(cups, dest, pickup_cups)
+    insert(cups, dest, pickup_cups)
 
-    return cups[(idx+1) % len(cups)]
+    return cups[current]
 
+# PART 1
+cups = make_cups([int(x) for x in "318946572"])
 current = 3
-for i in range(10):
+base = 10
+
+for i in range(100):
     print("--", "Move", i+1, "--")
-    current = play(cups, current)
+    current = play(cups, current, base, display=False)
     print()
+
+print("-- final --")
+pp(cups, current)
+
+#PART 2
+cups2 = make_cups([int(x) for x in "318946572"] + list(range(10,1000001)))
+base2 = 1000001
+current = 3
+for i in range(10000000):
+    current = play(cups2, current, base2, display=False)
+
+c1 = cups2[1]
+c2 = cups2[c1]
+print(c1, c2, c1*c2)
