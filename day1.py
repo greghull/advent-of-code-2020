@@ -1,32 +1,15 @@
-data = []
+from itertools import product
 
-with open('input/input1.txt') as f:
-    for line in f:
-        data.append(int(line))
+data = [int(line) for line in open("input/input1.txt").readlines()]
 
-data = sorted(data)
+def part1(d):
+    pair = next((x for x in product(d,d) if x[0] + x[1] == 2020))
+    return pair[0] * pair[1]
+    
+def part2(d):
+    smalls = [x for x in product(d,d) if x[0] + x[1] < 2020]
+    triplet = next((x for x in product(smalls, d) if x[0][0]+x[0][1]+x[1] == 2020))
+    return triplet[0][0] * triplet[0][1] * triplet[1]
 
-def day1_part1(array):
-    for i in range(len(array)):
-        for k in range(len(array) - 1, -1, -1):
-            val = array[i] + array[k]
-            if val == 2020:
-                return array[i]*array[k]
-            elif val < 2020:
-                break
-                
-def day1_part2(array):
-    for i in range(len(array)):
-        for j in range(i+1, len(array)):
-            val = array[i] + array[j]
-            if val >= 2020:
-                break
-            for k in range(len(array)):
-                val2 = val + array[k]
-                if val2 > 2020:
-                    break
-                elif val2 == 2020:
-                    return array[i]*array[j]*array[k]
-                
-print(day1_part1(data)) 
-print(day1_part2(data))
+print(part1(data)) 
+print(part2(data))
