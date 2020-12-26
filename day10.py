@@ -1,9 +1,9 @@
 # To solve part 2:
 # Based on the constraints of the puzzle:
-# Anytime the distance between two vertices is 3, then all paths most include that edge
-# We can split a large graph into independent left and right graphs at that edge
+# Any edge length of 3 must be included in all paths
+# We can split a large graph into independent graphs at those edges
 #
-# Given array of independent graphs [G_1, G_2, ..., G_n] 
+# Given array of independent graphs [G_1, G_2, ..., G_n]
 # Then the total number of paths from start to finish is:
 # n_paths(G_1) * n_paths(G_2) * ... * n_paths(G_n)
 
@@ -22,6 +22,7 @@ def series_to_graph(s):
         g[s[i]] = v
 
     return g
+
 
 # Given a graph, finds all paths from start to end
 def find_all_paths(g, start=None, end=None, path=[]):
@@ -43,8 +44,9 @@ def find_all_paths(g, start=None, end=None, path=[]):
                 paths.append(newpath)
     return paths
 
+
 # Given the sorted list of adapters, and a maximum distance between them
-# split into a list of slices each time two elements are the maximum distant apart
+# split into slices each time two elements are the maximum distant apart
 def split(s, d):
     result = []
     left = 0
@@ -52,7 +54,7 @@ def split(s, d):
     for i in range(len(s)-1):
         if s[i+1] - s[i] == d:
             result.append(s[left:i+1])
-            left=i+1
+            left = i + 1
 
     result.append(s[left:])
 
@@ -60,7 +62,7 @@ def split(s, d):
 
 
 def solve2(s):
-    graphs = [series_to_graph(x) for x in split(s,3)]
+    graphs = [series_to_graph(x) for x in split(s, 3)]
 
     # Since our graphs are independent total number of paths is
     # the product of the number of paths within each graph
@@ -70,9 +72,10 @@ def solve2(s):
 
     return cnt
 
+
 # solves part1.. expects a series of adapter joltage values
 def solve1(s):
-    diffs = [0,0,0,0]
+    diffs = [0, 0, 0, 0]
     for i in range(1, len(s)):
         diffs[s[i]-s[i-1]] += 1
 
@@ -80,11 +83,12 @@ def solve1(s):
 
     return diffs[1]*diffs[3]
 
+
 with open('input/input10.txt') as f:
     series = sorted([int(line.rstrip('\n')) for line in f])
 
 # insert the outlet before the sorted lists of adapters
 series.insert(0, 0)
-    
+
 print(solve1(series))
 print(solve2(series))
