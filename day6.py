@@ -3,8 +3,7 @@ def eval1(group: str) -> int:
     # yes is the set of questions that anyone answered 'yes' to
     yes = set()
     for line in group:
-        for ch in line:
-            yes.add(ch)
+        yes |= {ch for ch in line}
 
     # return the number of questions that anyone answered yes to
     return len(yes)

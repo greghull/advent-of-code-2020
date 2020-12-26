@@ -1,3 +1,5 @@
+from itertools import product
+
 # Recursivly performs binary space partitioning based on string input.
 # lower_ch is that character that means take the lower half
 # any other character means take the upper half
@@ -26,29 +28,17 @@ def seat_id(line: str) -> int:
 
 # Part 1 is to find the maximum seat if amongst the boarding passes
 def solve_part1(filename: str) -> int:
-    max_id = 0
-
     with open(filename) as f:
-        for line in f:
-            id = seat_id(line)
+        return max([seat_id(line) for line in f])
 
-            if id > max_id:
-                max_id = id
-
-    return max_id
 
 # Part 2 is to find the id of my seat
 def solve_part2(filename: str) -> int:
     # all seats are open before any boarding passes have been examined
-    open_seats = set()
-    for row in range(128):
-        for col in range(8):
-            open_seats.add(row*8+col)
+    open_seats = {row*8+col for row,col in product(range(128), range(8))}
 
     with open(filename) as f:
-        for line in f:
-            id = seat_id(line)
-            open_seats.remove(id)
+        open_seats.difference_update({seat_id(line) for line in f})
 
     # The puzzle states that the seats with ids +1 and -1 from my seat's id are being used
     for my_seat in open_seats:

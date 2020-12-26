@@ -13,11 +13,7 @@ BAGS = {}
 @lru_cache
 def contains(source, target):
     contents = BAGS[source]
-    for c in contents:
-        if c == target or contains(c, target):
-            return True
-
-    return False
+    return  next((c for c in contents if c == target or contains(c, target)), None)
 
 # Given a source bag, this function returns the number of bags it will contain, including all nested bags.
 def contents_count(source):
@@ -93,7 +89,7 @@ def parse(line):
 
 # Solve part1 of the day's problem
 def solve1() -> int:  
-    return sum(map(lambda x: 1 if contains(x, 'shiny gold') else 0, BAGS.keys()))
+    return len([bag for bag in BAGS.keys() if contains(bag, 'shiny gold')])
 
 # Solve part2 of the day's problem
 def solve2() -> int:  

@@ -83,24 +83,10 @@ def part1_validator(passport: str) -> bool:
 
 # Goes through the whole file, and tallies how many passports are valid
 def solve(validator: Callable[[str], bool], filename: str) -> int:
-    num_valid = 0               # the sum of the number of valid passports
-    current_passport = ""       # a string representing the passport as it's being read from file
+    passports = open(filename).read().split('\n\n')
+    return len([p for p in passports if validator(p)])
 
-    with open(filename) as f:
-        for line in f:
-            # at a blank line process the current passport then discard it.
-            if line.isspace():
-                if validator(current_passport):
-                    num_valid += 1
-                current_passport = ""
-            else:
-                # concatenate multiple line passports to a single string
-                current_passport += line
 
-    return num_valid
+print(solve(part1_validator, 'input/input4.txt'))
+print(solve(part2_validator, 'input/input4.txt'))
 
-def main():
-    print(solve(part1_validator, 'input/input4.txt'))
-    print(solve(part2_validator, 'input/input4.txt'))
-
-main()

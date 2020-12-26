@@ -66,17 +66,12 @@ def parse(line):
     tokens = line.split()
     return (tokens[0], int(tokens[1]))
 
-def main():
-    code = []
-    with open('input/input8.txt') as f:
-        for line in (line.rstrip('\n') for line in f):
-            code.append(parse(line))
 
-    # part 1
-    print(eval(code))
+with open('input/input8.txt') as f:
+    code = [parse(line) for line in (line.rstrip('\n') for line in f)]
 
-    # part 2
-    print(meta_eval(code))
+# part 1
+print(eval(code))
 
-
-main()
+# part 2
+print(meta_eval(code))

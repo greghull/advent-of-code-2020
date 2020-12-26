@@ -11,15 +11,10 @@ def test1(min, max, letter, pw):
 def test2(min, max, letter, pw):
     return (pw[int(min)-1] == letter) != (pw[int(max)-1] == letter)
 
-def main(filename, test):
-    num_valid = 0
+lines = [parse(line) for line in open("input/input2.txt").readlines()]
 
-    with open(filename) as f:
-        for line in f:
-            if test(*parse(line)):
-                num_valid += 1
+# Part 1
+print(len([line for line in lines if test1(*line)]))
 
-    return num_valid
-
-print(main('input/input2.txt', test1))
-print(main('input/input2.txt', test2))
+# Part 2
+print(len([line for line in lines if test2(*line)]))
